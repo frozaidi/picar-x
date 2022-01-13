@@ -7,11 +7,11 @@ def drive(picarx, dir="forward", angle=0, sleep=5):
     if dir == "forward":
         picarx.forward(100)
         time.sleep(sleep)
-        picar.stop()
+        picarx.stop()
     elif dir == "backward":
         picarx.backward(100)
         time.sleep(sleep)
-        picar.stop()
+        picarx.stop()
     else:
         print("Not a valid direction. Try again.")
 
@@ -20,22 +20,22 @@ def parallel_parking(picarx, dir="left"):
     if dir == "left":
         picarx.set_dir_servo_angle(-40)
         picarx.backward(100)
-        time.sleep(0.7)
-        picarx.set_dir_servo_angle(40)
         time.sleep(0.6)
+        picarx.set_dir_servo_angle(40)
+        time.sleep(0.5)
         picarx.set_dir_servo_angle(0)
         picarx.forward(100)
-        time.sleep(0.2)
+        time.sleep(0.25)
         picarx.stop()
     elif dir == "right":
         picarx.set_dir_servo_angle(40)
         picarx.backward(100)
-        time.sleep(0.7)
-        picarx.set_dir_servo_angle(-40)
         time.sleep(0.6)
+        picarx.set_dir_servo_angle(-40)
+        time.sleep(0.5)
         picarx.set_dir_servo_angle(0)
         picarx.forward(100)
-        time.sleep(0.2)
+        time.sleep(0.25)
         picarx.stop()
     else:
         print("Not a valid direction. Try again.")
@@ -77,8 +77,7 @@ if __name__ == '__main__':
             dir = input("Input direction [forward/backward]: ")
             angle = int(input("Input angle [-40,40]: "))
             sleep = int(input("Input duration of drive (seconds): "))
-            speed = abs(int(input("Set the speed [0,100]: ")))
-            drive(px, dir, angle, sleep, speed)
+            drive(px, dir, angle, sleep)
         elif maneuver == "parallel":
             dir = input("Input direction [left/right]: ")
             parallel_parking(px, dir)
