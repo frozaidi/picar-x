@@ -1,4 +1,3 @@
-# from ezblock import Servo,PWM,fileDB,Pin,ADC
 import time
 import logging
 import atexit
@@ -10,9 +9,12 @@ try:
     from pin import Pin
     from adc import ADC
     from filedb import fileDB
+    from utils import reset_mcu
+    reset_mcu()
     time.sleep(0.01)
 except (ImportError, ModuleNotFoundError, NameError):
-    print("This computer does not appear to be a PiCar-X system (ezblock is not present). Shadowing hardware calls with substitute functions")
+    print("This computer does not appear to be a PiCar-X system (ezblock is "
+          "not present). Shadowing hardware calls with substitute functions")
     from sim_ezblock import *
 
 logging_format = "%(asctime)s: %(message)s "
@@ -32,9 +34,12 @@ class Picarx(object):
         self.camera_servo_pin1 = Servo(PWM('P0'))
         self.camera_servo_pin2 = Servo(PWM('P1'))
         self.config_flie = fileDB('/home/frozaidi/.config')
-        self.dir_cal_value = int(self.config_flie.get("picarx_dir_servo", default_value=0))
-        self.cam_cal_value_1 = int(self.config_flie.get("picarx_cam1_servo", default_value=0))
-        self.cam_cal_value_2 = int(self.config_flie.get("picarx_cam2_servo", default_value=0))
+        self.dir_cal_value = int(self.config_flie.get("picarx_dir_servo",
+                                                      default_value=0))
+        self.cam_cal_value_1 = int(self.config_flie.get("picarx_cam1_servo",
+                                                        default_value=0))
+        self.cam_cal_value_2 = int(self.config_flie.get("picarx_cam2_servo",
+                                                        default_value=0))
         self.dir_servo_pin.angle(self.dir_cal_value)
         self.camera_servo_pin1.angle(self.cam_cal_value_1)
         self.camera_servo_pin2.angle(self.cam_cal_value_2)
@@ -47,10 +52,14 @@ class Picarx(object):
         self.S1 = ADC('A1')
         self.S2 = ADC('A2')
 
-        self.motor_direction_pins = [self.left_rear_dir_pin, self.right_rear_dir_pin]
-        self.motor_speed_pins = [self.left_rear_pwm_pin, self.right_rear_pwm_pin]
-        self.cali_dir_value = self.config_flie.get("picarx_dir_motor", default_value="[1,1]")
-        self.cali_dir_value = [int(i.strip()) for i in self.cali_dir_value.strip("[]").split(",")]
+        self.motor_direction_pins = [self.left_rear_dir_pin,
+                                     self.right_rear_dir_pin]
+        self.motor_speed_pins = [self.left_rear_pwm_pin,
+                                 self.right_rear_pwm_pin]
+        self.cali_dir_value = self.config_flie.get("picarx_dir_motor",
+                                                   default_value="[1,1]")
+        self.cali_dir_value = [int(i.strip()) for i in
+                               self.cali_dir_value.strip("[]").split(",")]
         self.cali_speed_value = [0, 0]
         self.dir_current_angle = 0
         # 初始化PWM引脚
@@ -58,9 +67,6 @@ class Picarx(object):
             pin.period(self.PERIOD)
             pin.prescaler(self.PRESCALER)
 
-    # @log_on_start(logging.DEBUG, "Motor: Message when function starts ")
-    # @log_on_error(logging.DEBUG, " Message when function encounters an error before completing ")
-    # @log_on_end(logging.DEBUG, " Message when function ends successfully")
     def set_motor_speed(self, motor, speed):
         # global cali_speed_value,cali_dir_value
         motor -= 1
@@ -199,7 +205,8 @@ class Picarx(object):
         return power_scale
 
     @log_on_start(logging.DEBUG, "Stop: Message when function starts")
-    @log_on_error(logging.DEBUG, "Message when function encounters an error before completing")
+    @log_on_error(logging.DEBUG, "Message when function encounters an error "
+                  "before completing")
     @log_on_end(logging.DEBUG, "Stop: Message when function ends successfully")
     def stop(self):
         self.set_motor_speed(1, 0)
@@ -236,21 +243,5 @@ if __name__ == "__main__":
     px = Picarx()
     px.set_dir_servo_angle(40)
     px.forward(100)
-    time.sleep(10)
+    time.sleep(5)
     px.stop()
-    # set_dir_servo_angle(0)
-    # time.sleep(1)
-    # self.set_motor_speed(1, 1)
-    # self.set_motor_speed(2, 1)
-    # camera_servo_pin.angle(0)
-# set_camera_servo1_angle(cam_cal_value_1)
-# set_camera_servo2_angle(cam_cal_value_2)
-# set_dir_servo_angle(dir_cal_value)
-
-# if __name__ == "__main__":
-#     try:
-#         # dir_servo_angle_calibration(-10)
-#         while 1:
-#             test()
-#     finally:
-#         stop()
