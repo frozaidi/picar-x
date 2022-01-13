@@ -2,63 +2,67 @@ import time
 from picarx_improved import Picarx
 
 
-def drive(picarx, dir="forward", angle=0, sleep=5, speed=100):
+def drive(picarx, dir="forward", angle=0, sleep=5):
     picarx.set_dir_servo_angle(angle)
     if dir == "forward":
-        picarx.forward(speed)
+        picarx.forward(100)
         time.sleep(sleep)
+        picar.stop()
     elif dir == "backward":
-        picarx.backward(speed)
+        picarx.backward(100)
         time.sleep(sleep)
+        picar.stop()
     else:
         print("Not a valid direction. Try again.")
 
 
-def parallel_parking(picarx, dir="left", sleep=1):
+def parallel_parking(picarx, dir="left"):
     if dir == "left":
         picarx.set_dir_servo_angle(-40)
         picarx.backward(100)
-        time.sleep(sleep)
+        time.sleep(0.7)
         picarx.set_dir_servo_angle(40)
-        time.sleep(sleep)
+        time.sleep(0.6)
+        picarx.set_dir_servo_angle(0)
         picarx.forward(100)
-        time.sleep(sleep/2)
+        time.sleep(0.2)
         picarx.stop()
     elif dir == "right":
         picarx.set_dir_servo_angle(40)
         picarx.backward(100)
-        time.sleep(sleep)
+        time.sleep(0.7)
         picarx.set_dir_servo_angle(-40)
-        time.sleep(sleep)
+        time.sleep(0.6)
+        picarx.set_dir_servo_angle(0)
         picarx.forward(100)
-        time.sleep(sleep/2)
+        time.sleep(0.2)
         picarx.stop()
     else:
         print("Not a valid direction. Try again.")
 
 
-def k_turn(picarx, dir="left", sleep=1):
+def k_turn(picarx, dir="left"):
     if dir == "left":
         picarx.set_dir_servo_angle(-40)
         picarx.forward(100)
-        time.sleep(sleep)
+        time.sleep(1)
         picarx.set_dir_servo_angle(40)
         picarx.backward(100)
-        time.sleep(sleep)
-        picarx.set_dir_servo_angle(-40)
+        time.sleep(1)
+        picarx.set_dir_servo_angle(0)
         picarx.forward(100)
-        time.sleep(sleep)
+        time.sleep(1)
         picarx.stop()
     elif dir == "right":
         picarx.set_dir_servo_angle(40)
         picarx.forward(100)
-        time.sleep(sleep)
+        time.sleep(1)
         picarx.set_dir_servo_angle(-40)
         picarx.backward(100)
-        time.sleep(sleep)
-        picarx.set_dir_servo_angle(40)
+        time.sleep(1)
+        picarx.set_dir_servo_angle(0)
         picarx.forward(100)
-        time.sleep(sleep)
+        time.sleep(1)
         picarx.stop()
     else:
         print("Not a valid direction. Try again.")
@@ -77,12 +81,10 @@ if __name__ == '__main__':
             drive(px, dir, angle, sleep, speed)
         elif maneuver == "parallel":
             dir = input("Input direction [left/right]: ")
-            sleep = int(input("Input duration of movement (seconds): "))
-            parallel_parking(px, dir, sleep)
+            parallel_parking(px, dir)
         elif maneuver == "kturn":
             dir = input("Input direction [left/right]: ")
-            sleep = int(input("Input duration of movement (seconds): "))
-            k_turn(px, dir, sleep)
+            k_turn(px, dir)
         else:
             print("Invalid maneuver, try again, you absolute fool.")
         continue_maneuver = input("Try another maneuver [y/n]? ")
