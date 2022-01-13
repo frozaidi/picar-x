@@ -194,14 +194,14 @@ class Picarx(object):
             self.set_motor_speed(2, -1*speed)
 
     def power_scale_calc(self, speed):
-        current_angle = self.dir_current_angle*math.pi/180.0
-        abs_current_angle = abs(current_angle)
+        current_angle = self.dir_current_angle
+        abs_current_angle = abs(current_angle)*math.pi/180
         if abs_current_angle > 40:
             abs_current_angle = 40
         wheelbase = 0.95
         wheelwidth = 1.12
-        power_scale = (wheelbase-(wheelwidth/2*math.tan(current_angle))) / \
-            (wheelbase+(wheelwidth/2*math.tan(current_angle)))
+        power_scale = (wheelbase-(wheelwidth/2*math.tan(abs_current_angle))) / \
+            (wheelbase+(wheelwidth/2*math.tan(abs_current_angle)))
         return power_scale
 
     def stop(self):
@@ -245,7 +245,7 @@ class Picarx(object):
 
 if __name__ == "__main__":
     px = Picarx()
-    px.set_dir_servo_angle(0)
+    px.set_dir_servo_angle(-40)
     px.forward(100)
     time.sleep(5)
     px.stop()
