@@ -29,7 +29,7 @@ class Picarx(object):
     TIMEOUT = 0.02
 
     def __init__(self):
-        atexit.register(self.stop)
+        atexit.register(self.cleanup)
         self.dir_servo_pin = Servo(PWM('P2'))
         self.camera_servo_pin1 = Servo(PWM('P0'))
         self.camera_servo_pin2 = Servo(PWM('P1'))
@@ -204,11 +204,15 @@ class Picarx(object):
             (wheelbase+(wheelwidth/2*math.tan(current_angle)))
         return power_scale
 
-    @log_on_start(logging.DEBUG, "Stop: Message when function starts")
+    def stop(self):
+        self.set_motor_speed(1, 0)
+        self.set_motor_speed(2, 0)
+
+    @log_on_start(logging.DEBUG, "Cleanup: Message when function starts")
     @log_on_error(logging.DEBUG, "Message when function encounters an error "
                   "before completing")
-    @log_on_end(logging.DEBUG, "Stop: Message when function ends successfully")
-    def stop(self):
+    @log_on_end(logging.DEBUG, "Cleanup: Message when function ends successfully")
+    def cleanup(self):
         self.set_motor_speed(1, 0)
         self.set_motor_speed(2, 0)
 
