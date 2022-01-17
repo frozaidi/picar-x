@@ -1,13 +1,4 @@
-try:
-    from adc import ADC
-    from utils import reset_mcu
-    reset_mcu()
-    time.sleep(0.01)
-except (ImportError, ModuleNotFoundError, NameError):
-    print("This computer does not appear to be a PiCar-X system (ezblock is "
-          "not present). Shadowing hardware calls with substitute functions")
-    from sim_ezblock import *
-
+from adc import ADC
 
 class GrayscaleSensor(object):
     def __init__(self):
