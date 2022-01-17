@@ -2,26 +2,17 @@ import time
 from picarx_improved import Picarx
 from interpreter import Interpreter
 from sensor import GrayscaleSensor
+from controller import Controller
 from utils import reset_mcu
 reset_mcu()
 
-
-class Controller(object):
-    def __init__(self, scale=1):
-        self.scale = scale*40
-
-    def line_follow(self, px, rel_dir):
-        self.steer_angle = -1*rel_dir*self.scale
-        px.set_dir_servo_angle(self.steer_angle)
-
-        return self.steer_angle
-
-
 if __name__ == '__main__':
     px = Picarx()
-    con = Controller(2)
+    scale = input("Enter scale: ")
+    polarity = input("Enter polarity:")
+    con = Controller(scale)
     sens = GrayscaleSensor()
-    inter = Interpreter(0.0, -1)
+    inter = Interpreter(0.0, polarity)
 
     while True:
         list = sens.get_grayscale_data()
