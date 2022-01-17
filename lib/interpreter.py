@@ -14,17 +14,21 @@ class Interpreter(object):
         gry_list_diff = max(gry_list_norm)-min(gry_list_norm)
         if gry_list_diff > self.sensitivity:
             rel_dir = gry_list_norm[0]-gry_list_norm[2]
+            print("Relative Direction: "+str(rel_dir))
             error = (max(gry_list_norm)-np.mean(gry_list_norm))/0.7
-            rel_dir_pol = rel_dir/error*self.polarity
+            print("Error: "+str(error))
+            rel_dir_pol = rel_dir*error*self.polarity
 
         return rel_dir_pol
 
 
 if __name__ == '__main__':
+    import time
     sens = GrayscaleSensor()
-    inter = Interpreter(0.0, 1)
+    inter = Interpreter(0.0, -1)
 
     while True:
         list = sens.get_grayscale_data()
         rel_dir = inter.edge_detect(list)
-        print(rel_dir)
+        print("{:.3f}".format(rel_dir))
+        time.sleep(1)
