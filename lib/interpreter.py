@@ -1,3 +1,4 @@
+import time
 import numpy as np
 from sensor import GrayscaleSensor
 from utils import reset_mcu
@@ -16,9 +17,9 @@ class Interpreter(object):
             rel_dir = gry_list_norm[0]-gry_list_norm[2]
             print("Relative Direction: "+str(rel_dir))
             if self.polarity == 1:
-                error = (max(gry_list_norm)-np.mean(gry_list_norm))/0.7
+                error = (max(gry_list_norm)-np.mean(gry_list_norm))*(2/3)
             elif self.polarity == -1:
-                error = (min(gry_list_norm)-np.mean(gry_list_norm))/0.7
+                error = (min(gry_list_norm)-np.mean(gry_list_norm))*(2/3)
             print("Error: "+str(error))
             rel_dir_pol = rel_dir*error*self.polarity
 
@@ -26,7 +27,6 @@ class Interpreter(object):
 
 
 if __name__ == '__main__':
-    import time
     sens = GrayscaleSensor()
     inter = Interpreter(0.0, -1)
 
