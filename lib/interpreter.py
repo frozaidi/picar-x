@@ -15,7 +15,10 @@ class Interpreter(object):
         if gry_list_diff > self.sensitivity:
             rel_dir = gry_list_norm[0]-gry_list_norm[2]
             print("Relative Direction: "+str(rel_dir))
-            error = (max(gry_list_norm)-np.mean(gry_list_norm))/0.7
+            if self.polarity == 1:
+                error = (max(gry_list_norm)-np.mean(gry_list_norm))/0.7
+            elif self.polarity == -1:
+                error = (min(gry_list_norm)-np.mean(gry_list_norm))/0.7
             print("Error: "+str(error))
             rel_dir_pol = rel_dir*error*self.polarity
 
