@@ -1,6 +1,6 @@
-import sys
-sys.path.append(r'/home/pi/picar-x/lib')
 from tts import TTS
+import sys
+sys.path.append(r'/home/frozaidi/picar-x/lib')
 
 
 if __name__ == "__main__":

@@ -1,23 +1,23 @@
 # coding=utf-8
-import sys
-sys.path.append(r'/home/pi/picar-x/lib')
-
-from utils import reset_mcu
-reset_mcu()
-from picarx import Picarx
-from utils import run_command
-import datetime
-
-import cv2
-from picamera.array import PiRGBArray
-from picamera import PiCamera
 import numpy as np
+from picamera import PiCamera
+from picamera.array import PiRGBArray
+import cv2
+import datetime
+from utils import run_command
+from picarx_improved import Picarx
+from utils import reset_mcu
+import sys
+sys.path.append(r'/home/frozaidi/picar-x/lib')
+
+reset_mcu()
+
 
 camera = PiCamera()
-camera.resolution = (640,480)
+camera.resolution = (640, 480)
 camera.framerate = 24
-camera.image_effect = "none"  #"none","negative","solarize","emboss","posterise","cartoon",
-rawCapture = PiRGBArray(camera, size=camera.resolution)  
+camera.image_effect = "none"  # "none","negative","solarize","emboss","posterise","cartoon",
+rawCapture = PiRGBArray(camera, size=camera.resolution)
 
 power_val = 0
 px = Picarx()
@@ -25,39 +25,39 @@ px = Picarx()
 
 try:
     while True:
-        for frame in camera.capture_continuous(rawCapture, format="bgr",use_video_port=True):# use_video_port=True
+        # use_video_port=True
+        for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
             img = frame.array
-            cv2.imshow("video", img)    
-        
+            cv2.imshow("video", img)
+
             k = cv2.waitKey(1) & 0xFF
             # 27 is ESC key
             if k == 27:
                 camera.close()
                 continue
             elif k == ord('o'):
-                if power_val <=90:
+                if power_val <= 90:
                     power_val += 10
-                    print("power_val:",power_val)  # motor power up
+                    print("power_val:", power_val)  # motor power up
             elif k == ord('p'):
-                if power_val >=10:
+                if power_val >= 10:
                     power_val -= 10
-                    print("power_val:",power_val)  # motor power up down
+                    print("power_val:", power_val)  # motor power up down
             elif k == ord('w'):
-                px.set_dir_servo_angle(0) # go forward
-                px.forward(power_val) 
+                px.set_dir_servo_angle(0)  # go forward
+                px.forward(power_val)
             elif k == ord('a'):
-                px.set_dir_servo_angle(-30) # go left
+                px.set_dir_servo_angle(-30)  # go left
                 px.forward(power_val)
             elif k == ord('s'):
-                px.set_dir_servo_angle(0) # go back
+                px.set_dir_servo_angle(0)  # go back
                 px.backward(power_val)
             elif k == ord('d'):
-                px.set_dir_servo_angle(30) # go right
+                px.set_dir_servo_angle(30)  # go right
                 px.forward(power_val)
-            elif k == ord('f'):    
+            elif k == ord('f'):
                 px.stop()  # stop
 
-        
             elif k == ord('t'):   # shoot
                 camera.close()
                 break
@@ -72,17 +72,12 @@ try:
         print(a_t)
         run_command(a_t)
 
-        # Vilib.shuttle_button() 
+        # Vilib.shuttle_button()
         camera = PiCamera()
-        camera.resolution = (640,480)
+        camera.resolution = (640, 480)
         camera.framerate = 24
-        camera.image_effect = "none"  #"none","negative","solarize","emboss","posterise","cartoon",
-        rawCapture = PiRGBArray(camera, size=camera.resolution)  
+        camera.image_effect = "none"  # "none","negative","solarize","emboss","posterise","cartoon",
+        rawCapture = PiRGBArray(camera, size=camera.resolution)
 finally:
     px.stop()
     camera.close()
-
-
-
-
-        
