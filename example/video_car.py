@@ -1,16 +1,21 @@
-# coding=utf-8
 import numpy as np
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 import cv2
 import datetime
-from utils import run_command
-from picarx_improved import Picarx
-from utils import reset_mcu
+import time
 import sys
 sys.path.append(r'/home/frozaidi/picar-x/lib')
-
-reset_mcu()
+try:
+    from picarx_improved import Picarx
+    from utils import run_command
+    from utils import reset_mcu
+    reset_mcu()
+    time.sleep(0.01)
+except (ImportError, ModuleNotFoundError, NameError):
+    print("This computer does not appear to be a PiCar-X system (ezblock is "
+          "not present). Shadowing hardware calls with substitute functions")
+    from sim_ezblock import *
 
 
 camera = PiCamera()

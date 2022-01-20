@@ -1,10 +1,17 @@
-from pin import Pin
-from ultrasonic import Ultrasonic
-from picarx import Picarx
-from utils import reset_mcu
+import time
 import sys
 sys.path.append(r'/home/frozaidi/picar-x/lib')
-reset_mcu()
+try:
+    from picarx import Picarx
+    from ultrasonic import Ultrasonic
+    from pin import Pin
+    from utils import reset_mcu
+    reset_mcu()
+    time.sleep(0.01)
+except (ImportError, ModuleNotFoundError, NameError):
+    print("This computer does not appear to be a PiCar-X system (ezblock is "
+          "not present). Shadowing hardware calls with substitute functions")
+    from sim_ezblock import *
 
 
 if __name__ == "__main__":

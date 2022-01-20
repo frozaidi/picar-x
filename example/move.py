@@ -1,9 +1,15 @@
 import time
-from picarx_improved import Picarx
-from utils import reset_mcu
 import sys
 sys.path.append(r'/home/frozaidi/picar-x/lib')
-reset_mcu()
+try:
+    from picarx_improved import Picarx
+    from utils import reset_mcu
+    reset_mcu()
+    time.sleep(0.01)
+except (ImportError, ModuleNotFoundError, NameError):
+    print("This computer does not appear to be a PiCar-X system (ezblock is "
+          "not present). Shadowing hardware calls with substitute functions")
+    from sim_ezblock import *
 
 
 if __name__ == "__main__":
