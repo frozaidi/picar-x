@@ -17,6 +17,7 @@ except (ImportError, ModuleNotFoundError, NameError):
           "not present). Shadowing hardware calls with substitute functions")
     from sim_ezblock import *
 
+# Logging configuration
 logging_format = "%(asctime)s: %(message)s "
 logging.basicConfig(format=logging_format, level=logging.INFO,
                     datefmt="%H:%M:%S")
@@ -29,7 +30,9 @@ class Picarx(object):
     TIMEOUT = 0.02
 
     def __init__(self):
+        # Add the cleanup function to the register to stop motors on exit
         atexit.register(self.cleanup)
+        # Initialize all the pins for motor controls
         self.dir_servo_pin = Servo(PWM('P2'))
         self.camera_servo_pin1 = Servo(PWM('P0'))
         self.camera_servo_pin2 = Servo(PWM('P1'))
@@ -51,7 +54,6 @@ class Picarx(object):
         self.S0 = ADC('A0')
         self.S1 = ADC('A1')
         self.S2 = ADC('A2')
-
         self.motor_direction_pins = [self.left_rear_dir_pin,
                                      self.right_rear_dir_pin]
         self.motor_speed_pins = [self.left_rear_pwm_pin,
@@ -62,21 +64,22 @@ class Picarx(object):
                                self.cali_dir_value.strip("[]").split(",")]
         self.cali_speed_value = [0, 0]
         self.dir_current_angle = 0
-        # 初始化PWM引脚
         for pin in self.motor_speed_pins:
             pin.period(self.PERIOD)
             pin.prescaler(self.PRESCALER)
 
     def set_motor_speed(self, motor, speed):
-        # global cali_speed_value,cali_dir_value
+        """
+        Function to set motor speed as a PWM percentage
+        :param motor: Motor number, either 1 or 2
+        :param speed: Motor speed, from 0 to 100
+        """
         motor -= 1
         if speed >= 0:
             direction = 1 * self.cali_dir_value[motor]
         elif speed < 0:
             direction = -1 * self.cali_dir_value[motor]
         speed = abs(speed)
-        # if speed != 0:
-        #     speed = int(speed / 2) + 50
         speed = speed - self.cali_speed_value[motor]
         if direction < 0:
             self.motor_direction_pins[motor].high()
@@ -86,7 +89,10 @@ class Picarx(object):
             self.motor_speed_pins[motor].pulse_width_percent(speed)
 
     def motor_speed_calibration(self, value):
-        # global cali_speed_value,cali_dir_value
+        """
+        Function to calibrate motor speed
+        :param value: offset value for motor speed calibration
+        """
         self.cali_speed_value = value
         if value < 0:
             self.cali_speed_value[0] = 0
@@ -96,57 +102,82 @@ class Picarx(object):
             self.cali_speed_value[1] = 0
 
     def motor_direction_calibration(self, motor, value):
-        # 0: positive direction
-        # 1:negative direction
-        # global cali_dir_value
+        """
+        Function to calibrate motor direction
+        :param motor: Motor number, either 1 or 2
+        :param value: Motor direction, either 0 (pos dir) or 1 (neg dir)
+        """
         motor -= 1
         if value == 1:
             self.cali_dir_value[motor] = -1 * self.cali_dir_value[motor]
         self.config_flie.set("picarx_dir_motor", self.cali_dir_value)
 
     def dir_servo_angle_calibration(self, value):
-        # global dir_cal_value
+        """
+        Function to calibrate wheel servo value
+        :param value: Servo offset angle, as an angle in degrees (pos or neg)
+        """
         self.dir_cal_value = value
         print("calibrationdir_cal_value:", self.dir_cal_value)
         self.config_flie.set("picarx_dir_servo", "%s" % value)
         self.dir_servo_pin.angle(value)
 
     def set_dir_servo_angle(self, value):
-        # global dir_cal_value
+        """
+        Function to set wheel servo angle
+        :param value: Servo angle, as an angle in degrees (pos or neg)
+        """
+        # Limit max angle to -40 to 40 degrees so it doesn't break the servo
+        if value > 40:
+            value = 40
+        elif value < -40:
+            value = -40
         self.dir_current_angle = value
         angle_value = value + self.dir_cal_value
         print("angle_value:", angle_value)
-        # print("set_dir_servo_angle_1:",angle_value)
-        # print("set_dir_servo_angle_2:",dir_cal_value)
         self.dir_servo_pin.angle(angle_value)
 
     def camera_servo1_angle_calibration(self, value):
-        # global cam_cal_value_1
+        """
+        Function to calibrate camera servo value
+        :param value: Servo offset angle, as an angle in degrees (pos or neg)
+        """
         self.cam_cal_value_1 = value
         self.config_flie.set("picarx_cam1_servo", "%s" % value)
         print("cam_cal_value_1:", self.cam_cal_value_1)
         self.camera_servo_pin1.angle(value)
 
     def camera_servo2_angle_calibration(self, value):
-        # global cam_cal_value_2
+        """
+        Function to calibrate camera servo value
+        :param value: Servo offset angle, as an angle in degrees (pos or neg)
+        """
         self.cam_cal_value_2 = value
         self.config_flie.set("picarx_cam2_servo", "%s" % value)
         print("picarx_cam2_servo:", self.cam_cal_value_2)
         self.camera_servo_pin2.angle(value)
 
     def set_camera_servo1_angle(self, value):
-        # global cam_cal_value_1
+        """
+        Function to set camera servo value
+        :param value: Servo angle, as an angle in degrees (pos or neg)
+        """
         self.camera_servo_pin1.angle(-1*(value + -1*self.cam_cal_value_1))
-        # print("self.cam_cal_value_1:",self.cam_cal_value_1)
         print((value + self.cam_cal_value_1))
 
     def set_camera_servo2_angle(self, value):
-        # global cam_cal_value_2
+        """
+        Function to set camera servo value
+        :param value: Servo angle, as an angle in degrees (pos or neg)
+        """
         self.camera_servo_pin2.angle(-1*(value + -1*self.cam_cal_value_2))
-        # print("self.cam_cal_value_2:",self.cam_cal_value_2)
         print((value + self.cam_cal_value_2))
 
     def get_adc_value(self):
+        """
+        Function to get the adc values of servo 1,2,3
+        :return: Returns the list of the adc values
+        """
         adc_value_list = []
         adc_value_list.append(self.S0.read())
         adc_value_list.append(self.S1.read())
@@ -154,69 +185,107 @@ class Picarx(object):
         return adc_value_list
 
     def set_power(self, speed):
+        """
+        Function to set the speed of the wheel motors
+        :param speed: Motor speed, from 0 to 100
+        """
         self.set_motor_speed(1, speed)
         self.set_motor_speed(2, speed)
 
     def backward(self, speed):
+        """
+        Function to move the PicarX backwards
+        :param speed: Motor speed, from 0 to 100
+        """
         current_angle = self.dir_current_angle
+        # Scale the wheel powers when the PicarX is turning
         if current_angle != 0:
             abs_current_angle = abs(current_angle)
             if abs_current_angle > 40:
                 abs_current_angle = 40
+            # Calculate the power scale
             power_scale = self.power_scale_calc(speed)
             print("power_scale:", power_scale)
+            # Depending on the direction of turn, properly scale the speeds
             if (current_angle / abs_current_angle) > 0:
                 self.set_motor_speed(1, -1*speed)
                 self.set_motor_speed(2, speed * power_scale)
             else:
                 self.set_motor_speed(1, -1*speed * power_scale)
                 self.set_motor_speed(2, speed)
+        # If the PicarX is not turning, wheels should be at the same speed
         else:
             self.set_motor_speed(1, -1*speed)
             self.set_motor_speed(2, speed)
 
     def forward(self, speed):
+        """
+        Function to move the PicarX forwards
+        :param speed: Motor speed, from 0 to 100
+        """
         current_angle = self.dir_current_angle
+        # Scale the wheel powers when the PicarX is turning
         if current_angle != 0:
             abs_current_angle = abs(current_angle)
+            # Max angle should be 40 degrees
             if abs_current_angle > 40:
                 abs_current_angle = 40
+            # Calculate the power scale
             power_scale = self.power_scale_calc(speed)
             print("power_scale:", power_scale)
+            # Depending on the direction of turn, properly scale the speeds
             if (current_angle / abs_current_angle) > 0:
                 self.set_motor_speed(1, speed)
                 self.set_motor_speed(2, -1*speed * power_scale)
             else:
                 self.set_motor_speed(1, speed * power_scale)
                 self.set_motor_speed(2, -1*speed)
+        # If the PicarX is not turning, wheels should be at the same speed
         else:
             self.set_motor_speed(1, speed)
             self.set_motor_speed(2, -1*speed)
 
     def power_scale_calc(self, speed):
+        """
+        Calculate the power scale based on the Ackerman steering equation
+        :param speed: Current motor speed, from 0 to 100
+        """
         current_angle = self.dir_current_angle
         abs_current_angle = abs(current_angle)*math.pi/180
         if abs_current_angle > 40:
             abs_current_angle = 40
+        # Dimensions calculated on the actual PicarX in meters
         wheelbase = 0.95
         wheelwidth = 1.12
+        # Ackerman steering equation
         power_scale = (wheelbase-(wheelwidth/2*math.tan(abs_current_angle))) / \
             (wheelbase+(wheelwidth/2*math.tan(abs_current_angle)))
         return power_scale
 
     def stop(self):
+        """
+        Function to stop the motors
+        """
         self.set_motor_speed(1, 0)
         self.set_motor_speed(2, 0)
 
+    # Log when cleanup function runs, as a sanity check when quitting scripts
     @log_on_start(logging.DEBUG, "Cleanup: Message when function starts")
     @log_on_error(logging.DEBUG, "Message when function encounters an error "
                   "before completing")
     @log_on_end(logging.DEBUG, "Cleanup: Message when function ends successfully")
     def cleanup(self):
+        """
+        Function to stop the motors, future iterations will include reseting
+        servo angles
+        """
         self.set_motor_speed(1, 0)
         self.set_motor_speed(2, 0)
 
     def Get_distance(self):
+        """
+        I have no idea what this does, not pertinent to code used.
+        """
         timeout = 0.01
         trig = Pin('D8')
         echo = Pin('D9')
@@ -244,6 +313,7 @@ class Picarx(object):
 
 
 if __name__ == "__main__":
+    # Spin the car for 5 seconds to make sure the PicarX setup is done properly
     px = Picarx()
     px.set_dir_servo_angle(-40)
     px.forward(100)

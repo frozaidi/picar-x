@@ -3,6 +3,12 @@ from picarx_improved import Picarx
 
 
 def drive(picarx, dir="forward", angle=0, sleep=5):
+    """
+    function to drive the PicarX forwards
+    :param dir: Direction of movement, forwards or backwards
+    :param angle: Angle of steering, from -40 to 40 degrees
+    :param sleep: The amount of time to drive the car
+    """
     picarx.set_dir_servo_angle(angle)
     if dir == "forward":
         picarx.forward(100)
@@ -17,6 +23,10 @@ def drive(picarx, dir="forward", angle=0, sleep=5):
 
 
 def parallel_parking(picarx, dir="left"):
+    """
+    function to perform a parallel parking maneuver for the PicarX
+    :param dir: Side of parking, left or right
+    """
     if dir == "left":
         picarx.set_dir_servo_angle(-35)
         picarx.backward(100)
@@ -42,6 +52,10 @@ def parallel_parking(picarx, dir="left"):
 
 
 def k_turn(picarx, dir="left"):
+    """
+    function to perform a k-turn maneuver for the PicarX
+    :param dir: Direction of initial movement, left or right
+    """
     if dir == "left":
         picarx.set_dir_servo_angle(-35)
         picarx.forward(100)
@@ -69,9 +83,10 @@ def k_turn(picarx, dir="left"):
 
 
 if __name__ == '__main__':
-    px = Picarx()
-    flag = False
+    px = Picarx()       # instantiate the PicarX class
+    flag = False        # set a flag to stop the while loop
     while flag is False:
+        # ask for input of type of maneuver, call the corresponding function
         maneuver = input("Select maneuver type [drive/parallel/kturn]: ")
         if maneuver == "drive":
             dir = input("Input direction [forward/backward]: ")
@@ -86,6 +101,7 @@ if __name__ == '__main__':
             k_turn(px, dir)
         else:
             print("Invalid maneuver, try again, you absolute fool.")
+        # at the end of the maneuver, ask user if they want to perform another
         continue_maneuver = input("Try another maneuver [y/n]? ")
         if continue_maneuver == "y":
             continue
