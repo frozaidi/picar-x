@@ -11,12 +11,6 @@ import sys
 from picarx_improved import Picarx
 
 
-# init camera
-camera = PiCamera()
-camera.resolution = (640, 480)
-camera.framerate = 24
-rawCapture = PiRGBArray(camera, size=camera.resolution)
-
 ###############################################################################
 
 
@@ -286,6 +280,13 @@ class HandCodedLaneFollower(object):
         show_image("heading", curr_heading_image)
 
         return curr_heading_image
+
+
+# init camera
+camera = PiCamera()
+camera.resolution = (640, 480)
+camera.framerate = 24
+rawCapture = PiRGBArray(camera, size=camera.resolution)
 
 
 if __name__ == '__main__':

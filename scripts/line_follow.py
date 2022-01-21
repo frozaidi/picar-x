@@ -5,6 +5,10 @@ from sensor import GrayscaleSensor
 from controller import Controller
 
 if __name__ == '__main__':
+    """
+    This script imports all helper functions and follows a line while moving
+    forwards at a constant speed
+    """
     px = Picarx()
     scale = int(input("Enter scale: "))
     polarity = int(input("Enter polarity:"))
