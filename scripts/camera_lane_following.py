@@ -8,8 +8,11 @@ import logging
 import math
 import datetime
 import sys
-from picarx_improved import Picarx
-
+sys.path.append(r'/home/frozaidi/picar-x/lib')
+try:
+    from picarx_improved import Picarx
+except ModuleNotFoundError:
+    pass
 
 ###############################################################################
 

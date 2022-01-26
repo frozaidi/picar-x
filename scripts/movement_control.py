@@ -1,5 +1,10 @@
 import time
-from picarx_improved import Picarx
+import sys
+sys.path.append(r'/home/frozaidi/picar-x/lib')
+try:
+    from picarx_improved import Picarx
+except ModuleNotFoundError:
+    pass
 
 
 def drive(picarx, dir="forward", angle=0, sleep=5):
