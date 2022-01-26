@@ -1,4 +1,5 @@
 from adc import ADC
+import time
 
 
 class GrayscaleSensor(object):
@@ -17,3 +18,15 @@ class GrayscaleSensor(object):
         adc_value_list.append(self.chn_1.read())
         adc_value_list.append(self.chn_2.read())
         return adc_value_list
+
+    def sensor_bus(self, bus, delay):
+        """
+        Function to run the sensor class in a loop using a broadcast bus to
+        write sensor value messages for each loop
+        :param bus: The bus class
+        :param delay: The time delay in seconds between each loop
+        """
+        while True:
+            adc_list = self.get_grayscale_data()
+            bus.write(adc_list)
+            time.sleep(delay)

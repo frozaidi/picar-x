@@ -44,6 +44,22 @@ class Interpreter(object):
 
         return rel_dir_pol
 
+    def interpret_bus(self, sens_bus, inter_bus, delay):
+        """
+        Function to run the interpret class in a loop using the sensor bus to
+        read sensor value messages, and the interpreter bus to write direction
+        messages for each loop
+        :param sens_bus: The sensor bus class, containing sensor messages
+        :param inter_bus: The interpreter bus class, containing direction
+        messages
+        :param delay: The time delay in seconds between each loop
+        """
+        while True:
+            gry_list = sens_bus.read()
+            rel_dir = self.edge_detect(gry_list)
+            inter_bus.write(rel_dir)
+            time.sleep(delay)
+
 
 if __name__ == '__main__':
     sens = GrayscaleSensor()
