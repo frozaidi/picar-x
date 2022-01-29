@@ -2,14 +2,11 @@ import time
 import concurrent.futures
 import sys
 sys.path.append(r'/home/frozaidi/picar-x/lib')
-try:
-    from picarx_improved import Picarx
-    from interpreter import Interpreter
-    from sensor import GrayscaleSensor
-    from controller import Controller
-    from bus import Bus
-except ModuleNotFoundError:
-    pass
+from picarx_improved import Picarx      # noqa: E402
+from interpreter import Interpreter     # noqa: E402
+from sensor import GrayscaleSensor      # noqa: E402
+from controller import Controller       # noqa: E402
+from bus import Bus                     # noqa: E402
 
 if __name__ == '__main__':
     """
@@ -27,6 +24,7 @@ if __name__ == '__main__':
     sens_delay = 0.01
     inter_delay = 0.01
     cont_delay = 0.01
+    px.forward(40)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
         eSensor = executor.submit(sens.sensor_bus,

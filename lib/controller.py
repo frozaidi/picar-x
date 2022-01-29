@@ -33,8 +33,7 @@ class Controller(object):
         """
         while True:
             rel_dir = bus.read()
-            steer_angle = self.line_follow(px, rel_dir)
-            print("Steering angle: "+str(steer_angle))
+            self.line_follow(px, rel_dir)
             time.sleep(delay)
 
 

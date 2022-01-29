@@ -7,10 +7,17 @@ class Bus():
         self.lock = rwlock.RWLockWriteD()
 
     def write(self, msg):
-        with self.lock.get_wlock():
+        """
+        Function to write message value to the instantiated bus
+        :param msg: The bus class
+        """
+        with self.lock.gen_wlock():
             self.msg = msg
 
     def read(self):
-        with self.lock.get_rlock():
+        """
+        Function to read and return message value from the instantiated bus
+        """
+        with self.lock.gen_rlock():
             msg = self.msg
         return msg
