@@ -1,13 +1,10 @@
 import time
 import sys
 sys.path.append(r'/home/frozaidi/picar-x/lib')
-try:
-    from picarx_improved import Picarx
-    from interpreter import Interpreter
-    from sensor import GrayscaleSensor
-    from controller import Controller
-except ModuleNotFoundError:
-    pass
+from picarx_improved import Picarx      # noqa: E402
+from interpreter import Interpreter     # noqa: E402
+from sensor import GrayscaleSensor      # noqa: E402
+from controller import Controller       # noqa: E402
 
 
 if __name__ == '__main__':

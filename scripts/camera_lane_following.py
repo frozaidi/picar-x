@@ -9,10 +9,7 @@ import math
 import datetime
 import sys
 sys.path.append(r'/home/frozaidi/picar-x/lib')
-try:
-    from picarx_improved import Picarx
-except ModuleNotFoundError:
-    pass
+from picarx_improved import Picarx  # noqa: E402
 
 ###############################################################################
 
