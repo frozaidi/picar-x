@@ -27,3 +27,15 @@ Three helper files were created for Week 3:
 The line following script, found in `/scripts/line_follow.py`, uses the above three helper functions to follow a line on the ground. Note that the grayscale sensors are actually IR transmitter/receivers. Therefore, some seemingly distinct combination of tape/ground might not actually work. This requires testing on different combinations.
 
 The camera line following script, found in `/scripts/camera_lane_following.py`, uses code obtained from the [DeepPiCar article](https://towardsdatascience.com/deeppicar-part-4-lane-following-via-opencv-737dd9e47c96), alongside the PicarX computer vision code to follow a piece of blue tape. Note that due to the large amount of processing required, speeds of the PicarX should be kept to a minimum to allow for processing and turning of the wheels.
+
+## Week 4 Code
+
+Three helper methods were created for Week 3, within the following files:
+
+- `/lib/sensor.py` under the `sensor_bus()` method
+- `/lib/interpreter.py` under the `interpret_bus()` method
+- `/lib/controller.py` under the `cont_bus()` method
+
+The bus class was also implemented in `/lib/bus.py` which establishes the structure for a broadcast bus.
+
+The line following script with concurrency is found in `/scripts/concurrent_line_follow.py`. This script uses the bus methods to perform concurrent line following.
