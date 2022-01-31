@@ -12,10 +12,10 @@ if __name__ == '__main__':
     px = Picarx()
     scale = int(input("Enter scale: "))
     polarity = int(input("Enter polarity:"))
-    con = Controller(scale)
+    con = Controller(px, scale)
     sens = GrayscaleSensor()
     inter = Interpreter(0.0, polarity)
-    sens_bus = rr.Bus(0, "Grayscale Sensor Bus")
+    sens_bus = rr.Bus([1,1,1], "Grayscale Sensor Bus")
     inter_bus = rr.Bus(0, "Grayscale Interpreter Bus")
     term_bus = rr.Bus(0, "Termination Bus")
 

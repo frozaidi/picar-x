@@ -21,6 +21,7 @@ class Interpreter(object):
         of the line to follow
         :param gry_list: The array of grayscale data from the module
         """
+        #print(gry_list)
         # Normalize the array to the maximum value obtained
         gry_list_norm = [float(i)/max(gry_list) for i in gry_list]
         # Get the difference between the max and min of the normalized values
@@ -41,6 +42,8 @@ class Interpreter(object):
             # to make a distinction between "just off-centered" and "very off-
             # centered"
             rel_dir_pol = rel_dir*error*self.polarity
+        else:
+            rel_dir_pol = 0
 
         return rel_dir_pol
 

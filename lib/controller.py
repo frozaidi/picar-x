@@ -5,7 +5,7 @@ from sensor import GrayscaleSensor
 
 
 class Controller(object):
-    def __init__(self, scale=1, px):
+    def __init__(self, px, scale=1):
         # Set a scale to the [-1,1] range of direction given by the interpreter
         # which matches the maximum angle of the PicarX robot
         self.scale = scale*40
