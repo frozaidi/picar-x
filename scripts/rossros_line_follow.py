@@ -46,22 +46,22 @@ if __name__ == '__main__':
     ult_cont = UltrasonicController(px, speed)
     ult_sens = UltrasonicSensor()
     ult_inter = UltrasonicInterpreter(dist, slow_rate)
-    ult_sens_bus = rr.Bus(-1, "Ultrasonic Sensor Bus")
+    ult_sens_bus = rr.Bus(0, "Ultrasonic Sensor Bus")
     ult_inter_bus = rr.Bus(0, "Ultrasonic Interpreter Bus")
 
     ult_sensCP = rr.Producer(ult_sens.read, ult_sens_bus, sens_delay,
-                             term_bus, "Grayscale Producer")
+                             term_bus, "Ultrasonic Producer")
 
-    ult_interCP = rr.ConsumerProducer(ult_inter.wall_detect, ult_sens_bus, ult_inter_bus,
-                                      inter_delay, term_bus,
-                                      "Grayscale Interpreter")
+    ult_interCP = rr.ConsumerProducer(ult_inter.wall_detect, ult_sens_bus,
+                                      ult_inter_bus, inter_delay, term_bus,
+                                      "Ultrasonic Interpreter")
 
-    ult_contCP = rr.Consumer(ult_cont.wall_avoid, ult_inter_bus, cont_delay, term_bus,
-                             "Grayscale Controller")
+    ult_contCP = rr.Consumer(ult_cont.wall_avoid, ult_inter_bus, cont_delay,
+                             term_bus, "Ultrasonic Controller")
 
-    px.forward(40)
+    # px.forward(40)
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=7) as executor:
         eGrySensor = executor.submit(gry_sens)
         eGryInterp = executor.submit(gry_inter)
         eGryCont = executor.submit(gry_cont)
