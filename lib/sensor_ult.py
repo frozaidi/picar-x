@@ -9,6 +9,9 @@ class UltrasonicSensor():
         self.timeout = timeout
 
     def _read(self):
+        """
+        Function reads the ultrasonic sensor values and converts it to cm
+        """
         self.trig.low()
         time.sleep(0.01)
         self.trig.high()
@@ -30,6 +33,11 @@ class UltrasonicSensor():
         return cm
 
     def read(self, times=10):
+        """
+        Function calls _read command a specified amount of times in case of
+        poor sensor readings, or sensor errors
+        :param times: the number of times that the function calls _read
+        """
         for i in range(times):
             a = self._read()
             if a != -1 or a <= 300:

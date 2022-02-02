@@ -13,11 +13,12 @@ from controller_ult import UltrasonicController         # noqa: E402
 
 if __name__ == '__main__':
     px = Picarx()
-    scale = int(input("Enter scale: "))
-    polarity = int(input("Enter polarity:"))
-    speed = int(input("Enter max speed:"))
-    dist = int(input("Enter wall distance:"))
-    slow_rate = int(input("Enter rate of slow down:"))
+    scale = int(input("Enter scale [1,10]: "))
+    polarity = int(input("Enter polarity (-1 or 1):"))
+    speed = int(input("Enter max speed [0,100]:"))
+    dist = int(input("Enter wall distance (cm):"))
+    slow_rate = int(input("Enter rate of slow down [1,10]:"))
+
     con = Controller(px, scale)
     sens = GrayscaleSensor()
     inter = Interpreter(0.0, polarity)
@@ -40,9 +41,6 @@ if __name__ == '__main__':
     gry_cont = rr.Consumer(con.line_follow, inter_bus, cont_delay, term_bus,
                            "Grayscale Controller")
 
-    term_timer = rr.Timer(term_bus, 5, term_delay, term_bus,
-                          "Termination Timer")
-
     ult_cont = UltrasonicController(px, speed)
     ult_sens = UltrasonicSensor()
     ult_inter = UltrasonicInterpreter(dist, slow_rate)
@@ -59,7 +57,8 @@ if __name__ == '__main__':
     ult_contCP = rr.Consumer(ult_cont.wall_avoid, ult_inter_bus, cont_delay,
                              term_bus, "Ultrasonic Controller")
 
-    # px.forward(40)
+    term_timer = rr.Timer(term_bus, 5, term_delay, term_bus,
+                          "Termination Timer")
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=7) as executor:
         eGrySensor = executor.submit(gry_sens)
